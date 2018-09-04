@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.bootcss.com/vue/2.5.16/vue.js"></script>
+    <title>Document</title>
+    <style>
+        #app {
+                width: 600px;
+                margin: 10px auto;
+            }
+    
+            .tb {
+                border-collapse: collapse;
+                width: 100%;
+            }
+    
+            .tb th {
+                background-color: #0094ff;
+                color: white;
+            }
+    
+            .tb td,
+            .tb th {
+                padding: 5px;
+                border: 1px solid black;
+                text-align: center;
+            }
+    
+            .add {
+                padding: 5px;
+                border: 1px solid black;
+                margin-bottom: 10px;
+            }
+        </style>
+</head>
+
+<body>
+    <div id="app">
+        <brand-manager></brand-manager>
+    </div>
+</body>
+
+</html>
+
+<script type="text/html" id="templateId">
+    <!-- 组件模板应该有根目录的存在 -->
+<div>
+    <!-- //组件模板 -->
+    <div class="add">
+                 编号:
+                 <input type="text" v-model="id"> 
+                 品牌名称:
+                 <input type="text"  @keyup.enter="add"  v-model="name">
+                 <input type="button" @click="add"value="添加"  >
+             </div>
+             <div class="add">
+                 品牌名称:
+                 <input type="text" placeholder="请输入搜索条件">
+             </div>
+             <table class="tb">
+                 <tr>
+                     <th>编号</th>
+                     <th>品牌名称</th>
+                     <th>创立时间</th>
+                     <th>操作</th>
+                 </tr>
+                 <!---->
+                 <tr v-if="brandlist.length === 0">
+                        <!--没有内容的时候显示没有数据-->
+                        <td colspan="4">没有数据!</td>
+                 </tr>
+                 <tr v-for="item in brandlist">
+                     <td>{{ item.id }}</td>
+                     <td>{{ item.name }}</td>
+                     <td>{{ item.time }}</td>
+                     <td><a href="#">删除</a></td>
+                 </tr>
+             </table>
+            </div>
+</script>
+<script>
+    //自定义注册事件;
+    Vue.component("brand-manager", {
+        template: `#templateId`,
+        data() {
+            return {
+                brandlist: [
+                    {
+                        id: 1,
+                        name: "LV",
+                        time: new Date()
+                    },
+                    {
+                        id: 2,
+                        name: "GUCCI",
+                        time: new Date()
+                    }
+                ],
+                id: "",
+                name: ""
+            }
+        },
+        methods:{
+            add(){
+                this.brandlist.push({
+                    id:this.id,
+                    name:this.name,
+                    time:new Date()
+                })
+            }
+        }
+    });
+    var app = new Vue({
+        el: "#app",
+    });
+</script>
