@@ -40,6 +40,7 @@
 
 <body>
     <div id="app">
+        
         <brand-manager></brand-manager>
     </div>
 </body>
@@ -73,11 +74,11 @@
                         <!--没有内容的时候显示没有数据-->
                         <td colspan="4">没有数据!</td>
                  </tr>
-                 <tr v-for="item in brandlist">
+                 <tr v-for="(item,index) in brandlist" :key="item.id">
                      <td>{{ item.id }}</td>
                      <td>{{ item.name }}</td>
-                     <td>{{ item.time }}</td>
-                     <td><a href="#">删除</a></td>
+                     <td>{{ item.time | formateDate}}</td>
+                     <td><a href="javascript:void(0)" @click = "delList(index)" >删除</a></td>
                  </tr>
              </table>
             </div>
@@ -104,6 +105,18 @@
                 name: ""
             }
         },
+        filters:{
+            formateDate(input,operatat="-"){
+                var date = new Date(input)
+                var year = date.getFullYear()
+                var month = date.getMonth()+1
+                var day = date.getDate()
+                var hour = date.getHours()
+                var minus = date.getMinutes();
+                var second = date.getSeconds();
+                return `${year}${month}${day}${hour}:${minus}:${second}`
+            }
+        },
         methods:{
             add(){
                 this.brandlist.push({
@@ -111,6 +124,11 @@
                     name:this.name,
                     time:new Date()
                 })
+            },
+            delList(index){
+                //删除对应的列表值;
+                this.brandlist.splice(index,1) 
+
             }
         }
     });
