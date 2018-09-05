@@ -170,9 +170,8 @@
                 //brand 为遍历的每一个数组的value的值,在这里为么一个数据对象;arr为原数组对象
                 var newBrandList = this.brandlist.filter(function (currentValue, index, arr) {
                     return currentValue.name.includes(this.keyword)
-                },this);
+                },this);//在作为函数回调的时候应添加this,
                 this.brandlist = newBrandList;
-                
             }
         }
 
