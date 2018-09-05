@@ -40,7 +40,7 @@
 
 <body>
     <div id="app">
-        
+
         <brand-manager></brand-manager>
     </div>
 </body>
@@ -60,7 +60,7 @@
              </div>
              <div class="add">
                  品牌名称:
-                 <input type="text" placeholder="请输入搜索条件">
+                 <input type="text" @keyup.enter="search"  v-model="keyword" placeholder="请输入搜索条件">
              </div>
              <table class="tb">
                  <tr>
@@ -84,13 +84,13 @@
             </div>
 </script>
 <script>
-    //自定义注册事件;
+    //自定义注册组件
     Vue.component("brand-manager", {
         template: `#templateId`,
+        //data必须使一个函数,因为ia一个项目中会有多个组件,
         data() {
             return {
-                brandlist: [
-                    {
+                brandlist: [{
                         id: 1,
                         name: "LV",
                         time: new Date()
@@ -101,36 +101,83 @@
                         time: new Date()
                     }
                 ],
+                oldBrandList: [],
                 id: "",
-                name: ""
+                name: "",
+                keyword: ""
+
             }
         },
-        filters:{
-            formateDate(input,operatat="-"){
+        //组件创建的同时其中的方法也会被执行
+        created() {
+            this.oldBrandList = this.brandlist;
+
+        },
+        filters: {
+            formateDate(input, operator = '-') {
                 var date = new Date(input)
                 var year = date.getFullYear()
-                var month = date.getMonth()+1
+                var month = date.getMonth() + 1
                 var day = date.getDate()
                 var hour = date.getHours()
                 var minus = date.getMinutes();
                 var second = date.getSeconds();
-                return `${year}${month}${day}${hour}:${minus}:${second}`
+                return `${year}${month} ${day} ${hour}:${minus}:${second}`
             }
         },
-        methods:{
-            add(){
+        methods: {
+            add() {
                 this.brandlist.push({
-                    id:this.id,
-                    name:this.name,
-                    time:new Date()
+                    id: this.id,
+                    name: this.name,
+                    time: new Date()
                 })
+                //新增完成以后将新数组保存起来;
+                this.oldBrandList = this.brandlist;
             },
-            delList(index){
+            delList(index) {
                 //删除对应的列表值;
-                this.brandlist.splice(index,1) 
+                this.brandlist.splice(index, 1);
+                //删除数据以后,将删除数组重新保存,
+                this.oldBrandList = this.brandlist;
+            },
+            search() {
+                //如果输入框为空,则显示全部的数据;
+                if (this.keyword.length === 0) {
+                    this.brandlist = this.oldBrandList;
+                    return
+                }
+                //array.filter(function(currentValue,index,arr), thisValue)
+                //brand 为遍历的每一个数组的value的值,在这里为么一个数据对象;arr为原数组对象
+                var newBrandList = this.brandlist.filter(function (currentValue, index, arr) {
+                    return currentValue.name.includes(this.keyword)
+                },this);
+                console.log(this.keyword);
+                
+                this.brandlist = newBrandList;
 
+                
+            }
+        },
+        watch:{
+            keyword(newValue,oldValue){
+               //如果输入框为空,则显示全部的数据;
+                if (this.keyword.length === 0) {
+                    this.brandlist = this.oldBrandList;
+                    return
+                }
+                //array.filter(function(currentValue,index,arr), thisValue)
+                //brand 为遍历的每一个数组的value的值,在这里为么一个数据对象;arr为原数组对象
+                var newBrandList = this.brandlist.filter(function (currentValue, index, arr) {
+                    return currentValue.name.includes(this.keyword)
+                },this);
+                this.brandlist = newBrandList;
+                
             }
         }
+
+        //搜索数组,中的数据;
+
     });
     var app = new Vue({
         el: "#app",
